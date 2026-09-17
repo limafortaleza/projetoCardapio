@@ -1,0 +1,21 @@
+{
+  "produtos": [
+    {
+      
+      "nome": "Hambúrguer Clássico",
+      "descricao": "Pão brioche, blend bovino 150g, queijo prato e maionese da casa.",
+      "preco": 28.9,
+      "categoria": "Lanches",
+      "imagem": "https://placehold.co/200x200?text=Hamburguer"
+    },
+    {
+      
+      "nome": "Suco de Laranja",
+      "descricao": "Copo 400ml de suco natural sem adição de açúcar.",
+      "preco": 12.0,
+      "categoria": "Bebidas",
+      "imagem": "https://placehold.co/200x200?text=Suco"
+    }
+  ],
+  "contalibidade": []
+}
