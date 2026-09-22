@@ -1,21 +1,70 @@
 {
   "produtos": [
     {
-      
-      "nome": "Hambúrguer Clássico",
-      "descricao": "Pão brioche, blend bovino 150g, queijo prato e maionese da casa.",
+      "nome": "X-Burger Artesanal",
+      "descricao": "Hambúrguer bovino de 180g, queijo cheddar, alface, tomate e molho especial no pão brioche.",
       "preco": 28.9,
       "categoria": "Lanches",
-      "imagem": "https://placehold.co/200x200?text=Hamburguer"
+      "imagem": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd",
+      "id": "oSaKJo5mBiA"
     },
     {
-      
-      "nome": "Suco de Laranja",
-      "descricao": "Copo 400ml de suco natural sem adição de açúcar.",
-      "preco": 12.0,
+      "nome": "Filé de Frango Grelhado",
+      "descricao": "Filé de frango grelhado acompanhado de arroz, feijão, batata frita e salada.",
+      "preco": 34.9,
+      "categoria": "Pratos Executivos",
+      "imagem": "https://images.unsplash.com/photo-1532550907401-a500c9a57435",
+      "id": "CquENrR7lyo"
+    },
+    {
+      "nome": "Salada Caesar",
+      "descricao": "Alface romana, croutons crocantes, parmesão ralado e molho Caesar.",
+      "preco": 24.9,
+      "categoria": "Saladas",
+      "imagem": "https://images.unsplash.com/photo-1546793665-c74683f339c1",
+      "id": "ZTVOCXOkBho"
+    },
+    {
+      "nome": "Batata Frita Especial",
+      "descricao": "Porção de batatas fritas crocantes cobertas com cheddar e bacon.",
+      "preco": 23,
+      "categoria": "Petiscos",
+      "imagem": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877",
+      "id": "PGhOlCARrhg"
+    },
+    {
+      "nome": "Suco Natural de Laranja",
+      "descricao": "Suco de laranja fresco, preparado na hora sem adição de açúcar.",
+      "preco": 9.9,
       "categoria": "Bebidas",
-      "imagem": "https://placehold.co/200x200?text=Suco"
+      "imagem": "https://images.unsplash.com/photo-1600271886742-f049cd5bba3f",
+      "id": "BrGne2Opbn4"
+    },
+    {
+      "nome": "Mousse de maracujá",
+      "descricao": "Deliciosa mousse de maracujá, leve e cremosa, preparada com ingredientes selecionados para garantir o equilíbrio perfeito entre o doce e o azedinho da fruta.",
+      "preco": 15,
+      "categoria": "Lanches",
+      "imagem": "https://images.unsplash.com/photo-1625938145744-6b0c2d2e6f3a",
+      "id": "vZcYXTfdV5k"
+    },
+    {
+      "nome": "X-Burger Artesanal",
+      "descricao": "dsds",
+      "preco": 23,
+      "categoria": "Petiscos",
+      "imagem": "https://images.unsplash.com/photo-1625938145744-6b0c2d2e6f3a",
+      "id": "Jw6LXysDDEY"
+    },
+    {
+      "nome": "Salada simples",
+      "descricao": "kjlkfjdslkfjsdlk",
+      "preco": 78,
+      "categoria": "Saladas",
+      "imagem": "",
+      "id": "yZjI9F_gh4c"
     }
   ],
-  "contalibidade": []
+  "contalibidade": [],
+  "$schema": "./node_modules/json-server/schema.json"
 }

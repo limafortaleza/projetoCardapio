@@ -1,9 +1,9 @@
-const API_URL = "http://localhost:3000/";
-async function listarProdutos() {
+const API_URL = "http://localhost:3000";
+export async function listarPratos() {
     const resposta = await fetch(`${API_URL}/produtos`);
     return resposta.json();
 }
-async function gravarProduto(produto) {
+export async function salvarPrato(produto) {
     const resposta = await fetch(`${API_URL}/produtos`, {
         method: "POST",
         headers: {
@@ -13,5 +13,3 @@ async function gravarProduto(produto) {
     });
     return resposta.json();
 }
-export {};
-//# sourceMappingURL=service.js.map

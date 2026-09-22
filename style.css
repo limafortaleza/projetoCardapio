@@ -1,0 +1,5 @@
+#resultado .card-img-top {
+        height: 140px; /* Altura menor para a imagem */
+        object-fit: cover;
+        border-radius: 16px 16px 0 0;
+      }

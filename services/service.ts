@@ -1,13 +1,13 @@
-import type { Produto } from "../produtos";
+import type { Produto } from "../produtos.js";
 
-const API_URL = "http://localhost:3000/";
+const API_URL = "http://localhost:3000";
 
-async function listarProdutos() {
+export async function listarPratos() {
   const resposta = await fetch(`${API_URL}/produtos`);
   return resposta.json();
 }
 
-async function gravarProduto(produto: Produto) {
+export async function salvarPrato(produto: Produto) {
   const resposta = await fetch(`${API_URL}/produtos`, {
     method: "POST",
     headers: {

@@ -1,27 +1,43 @@
 export {};
-import { Produto } from "./produtos.js";
 
-const nomeProduto = document.querySelector("#nomeProduto") as HTMLInputElement;
+import { GerenciadorCardapio } from "./gerenciadorCardapio.js";
+import { Produto } from "./produtos.js";
+import { listarPratos, salvarPrato } from "./services/service.js";
+
+const nome = document.querySelector("#nomeProduto") as HTMLInputElement;
+const descricao = document.querySelector("#descricao") as HTMLInputElement;
 const precoProduto = document.querySelector(
   "#precoProduto",
 ) as HTMLInputElement;
-const tipoProduto = document.querySelector("#tipoProduto") as HTMLSelectElement;
-const imagemProduto = document.querySelector(
-  "#inputGroupFileAddon04",
-) as HTMLInputElement;
+const categoria = document.querySelector("#tipoProduto") as HTMLSelectElement;
+const imagemInput = document.querySelector("#urlDaImagem") as HTMLInputElement;
 const formulario = document.querySelector("#formProduto") as HTMLFormElement;
 
-formulario?.addEventListener("submit", async (e) => {
+const resultado = document.querySelector("#resultado");
+
+const lista = new GerenciadorCardapio([]);
+
+lista.listarCardapio();
+
+console.log(lista);
+
+formulario.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const produto = new Produto(
-    nomeProduto.value,
-    precoProduto.value,
-    tipoProduto.value,
-    // imagemProduto.value,
+  //cria meu objeto
+  const prato = new Produto(
+    nome.value,
+    descricao.value,
+    Number(precoProduto.value),
+    categoria.value,
+    imagemInput.value,
   );
 
-  if (produto.validarDados()) {
-    alert("nome correto");
+  //método de produto que vai validar os dados. Se tudo ok, salva na service.
+  if (prato.validarDados()) {
+    await salvarPrato(prato);
+    alert("Dados cadastrados com sucesso!");
+    formulario.reset();
+    resultado!.innerHTML += prato.criarCard();
   }
 });
