@@ -4,8 +4,11 @@ export class Produto {
     preco;
     categoria;
     imagem;
+    // private acumulado: number = 0;
+    precoFinal;
     static proximoId = 1;
     id;
+    static vendaTotal = 0;
     constructor(nome, descricao, preco, categoria, imagem) {
         this.nome = nome;
         this.descricao = descricao;
@@ -14,6 +17,8 @@ export class Produto {
         this.imagem = imagem;
         this.id = Produto.proximoId;
         Produto.proximoId += 1;
+        this.precoFinal = this.calculaPrecoFinal();
+        // this.acumulado=Produto.vendaTotal++
     }
     validarDados() {
         if (this.nome.length < 3) {
@@ -28,23 +33,27 @@ export class Produto {
         if (this.categoria === "") {
             return false;
         }
+        if (this.imagem === "") {
+            return false;
+        }
         return true;
+    }
+    calculaPrecoFinal() {
+        return this.preco;
     }
     criarCard() {
         const htmlGerado = `
       <div class="card" style="width: 18rem;">
-        <img src="${this.imagem}" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">${this.nome}</h5>
-          <p class="card-text">${this.preco.toFixed(2)}</p>
-          <p class="card-text">${this.descricao}</p>
-          <a href="#" class="btn btn-success">Editar</a>
-          <a href="#" class="btn btn-danger">Excluir</a>
-          
-        </div>
-      </div>
-
-      
+          <img src="${this.imagem}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">${this.nome}</h5>
+            <p class="card-text">R$ ${this.precoFinal.toFixed(2)}</p>
+            <p class="card-text">${this.descricao}</p>
+           <button type="button" class="btn btn-success" data-acao="vender" data-id="${this.id}">Venda</button>
+            <button type="button" class="btn btn-danger" data-acao="excluir" data-id="${this.id}">Excluir</button>
+            
+          </div>
+      </div>   
       `;
         return htmlGerado;
     }
