@@ -1,25 +1,38 @@
 
 import type { IProduto } from "../interfaces/IProduto";
 
+
 export abstract class Produto implements IProduto {
   // private acumulado: number = 0;
   public precoFinal: number;
   private static proximoId = 1;
-  readonly id: number;
-  private static vendaTotal: number = 0;
+  readonly id: string;
+  // private static vendaTotal: number = 0;
   constructor(
     protected nome: string,
     protected descricao: string,
     protected preco: number,
     protected categoria: string,
     protected imagem: string,
+    id?:string
   ) {
-    this.id = Produto.proximoId;
-    Produto.proximoId += 1;
+
+    this.id = id ||""
+    // this.id = Produto.proximoId;
+    // Produto.proximoId += 1;
 
     this.precoFinal = this.calculaPrecoFinal();
 
-    // this.acumulado=Produto.vendaTotal++
+    
+  }
+
+
+  get consultaNome():string{
+    return this.nome
+  }
+
+  get consultaPreco():number{
+    return this.calculaPrecoFinal()
   }
 
   validarDados() {
@@ -55,6 +68,8 @@ export abstract class Produto implements IProduto {
             <p class="card-text">${this.descricao}</p>
            <button type="button" class="btn btn-success" data-acao="vender" data-id="${this.id}">Venda</button>
             <button type="button" class="btn btn-danger" data-acao="excluir" data-id="${this.id}">Excluir</button>
+            
+
             
           </div>
       </div>   

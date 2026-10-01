@@ -7,8 +7,9 @@ export class Bebidas extends Produto {
     preco: number,
     categoria: string,
     imagem: string,
+    id:string
   ) {
-    super(nome, descricao, preco, categoria, imagem);
+    super(nome, descricao, preco, categoria, imagem,id);
   }
 
   //Criando o objeto dentro da própia classe:
@@ -18,8 +19,9 @@ export class Bebidas extends Produto {
     preco: number,
     categoria: string,
     imagem: string,
+    id:string
   ) {
-    return new Bebidas(nome, descricao, preco, categoria, imagem);
+    return new Bebidas(nome, descricao, preco, categoria, imagem,id);
   }
 
   override calculaPrecoFinal() {

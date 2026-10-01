@@ -122,7 +122,7 @@
                           Escolha uma categoria...
                         </option>
                         <option value="Lanches">Lanches</option>
-                        <option value="Pratos Executivos">
+                        <option value="Pratos">
                           Pratos Executivos
                         </option>
                         <option value="Bebidas">Bebidas</option>
@@ -179,6 +179,50 @@
       </div>
     </div>
 
+    <div class="container mb-4">
+      <div class="card card-modern">
+        <div class="card-header card-header-modern">
+          <h5 class="mb-0">
+            <i class="bi bi-cash-coin me-2"></i>
+            Resumo de Vendas
+          </h5>
+        </div>
+
+        <div class="card-body py-4">
+          <div class="row text-center">
+
+            <!-- Venda Atual -->
+            <div class="col-md-6 border-end">
+              <i class="bi bi-receipt-cutoff text-primary fs-1"></i>
+              <h6 class="text-muted mt-2">Total da Venda</h6>
+              <h2
+                id="venda-atual"
+                class="fw-bold text-primary mb-0"
+              >
+               R$ 0,00
+               
+              </h2>
+            </div>
+
+            <!-- Total Geral -->
+            <div class="col-md-6">
+              <i class="bi bi-graph-up-arrow text-success fs-1"></i>
+              <h6 class="text-muted mt-2">Total Geral de Vendas</h6>
+              <h2
+                id="total-geral-vendas"
+                class="fw-bold text-success mb-0"
+              >
+               R$ 0,00
+                
+              </h2>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
     <div class="container pb-5">
       <div
         class="d-flex flex-wrap justify-content-center gap-4 text-center"

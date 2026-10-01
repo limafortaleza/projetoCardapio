@@ -13,13 +13,17 @@ export async function salvarProduto(produto) {
     });
     return resposta.json();
 }
-export async function salvarVendas(produto) {
+export async function salvarVendas(venda) {
     const resposta = await fetch(`${API_URL}/vendas`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(produto),
+        body: JSON.stringify(venda),
     });
+    return resposta.json();
+}
+export async function listarVendas() {
+    const resposta = await fetch(`${API_URL}/vendas`, {});
     return resposta.json();
 }

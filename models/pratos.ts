@@ -6,9 +6,10 @@ export class Pratos extends Produto {
     descricao: string,
     preco: number,
     categoria: string,
-    imagem: string
+    imagem: string,
+    id: string,
   ) {
-    super(nome, descricao, preco, categoria, imagem);
+    super(nome, descricao, preco, categoria, imagem, id);
   }
 
   //Criando o objeto dentro da própia classe:
@@ -18,13 +19,12 @@ export class Pratos extends Produto {
     preco: number,
     categoria: string,
     imagem: string,
+    id: string,
   ) {
-    return new Pratos(nome, descricao, preco, categoria, imagem);
+    return new Pratos(nome, descricao, preco, categoria, imagem, id);
   }
 
   override calculaPrecoFinal() {
     return this.preco;
   }
-
-
 }

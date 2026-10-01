@@ -4,8 +4,14 @@ import { Bebidas } from "./models/bebidas.js";
 import { Lanches } from "./models/lanches.js";
 import { Pratos } from "./models/pratos.js";
 import { Produto } from "./models/produtos.js";
+import { Venda } from "./models/vendas.js";
 
-import { listarProdutos, salvarProduto } from "./services/service.js";
+import {
+  listarProdutos,
+  listarVendas,
+  salvarProduto,
+  salvarVendas,
+} from "./services/service.js";
 
 //*Capturando os elemntos do DOM.
 const nome = document.querySelector("#nomeProduto") as HTMLInputElement;
@@ -17,19 +23,51 @@ const categoria = document.querySelector("#tipoProduto") as HTMLSelectElement;
 const imagemInput = document.querySelector("#urlDaImagem") as HTMLInputElement;
 const formulario = document.querySelector("#formProduto") as HTMLFormElement;
 const resultado = document.querySelector("#resultado") as HTMLDivElement;
+const vendaAtual = document.querySelector("#venda-atual") as HTMLDivElement;
+const totalGeralVendas = document.querySelector(
+  "#total-geral-vendas",
+) as HTMLDivElement;
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //*INÍCIO DO CÓDIGO
 
 renderizarProduto();
 
-// const classes : Produto[] = [objetos,pratos,lanches]
+renderizarVendas();
 
+async function renderizarVendas() {
+  try {
+    const exibirVendas = await listarVendas();
+    if (exibirVendas.length === 0) {
+      totalGeralVendas.innerHTML = "Precisamos vender!";
+    } else {
+      exibirVendas.forEach((item: Venda) => {
+        restaurarVendaDaApi(item);
+        console.log(item);
+      });
+      totalGeralVendas.innerHTML = `${Venda.faturamentoTotal.toFixed(2)}`;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//trazer os dados das instancias de vendas. A API só me traz o dado "CRU"
+function restaurarVendaDaApi(item: any): Venda {
+  const venda = new Venda();
+  item.produtos.forEach((produto: any) => {
+    const produtoInstancia = restaurarProdutoDaApi(produto);
+    venda.adicionar(produtoInstancia);
+  });
+  venda.finalizarVenda();
+  return venda;
+}
 
 const classesDisponiveis: any = {
   Bebidas: Bebidas,
   Lanches: Lanches,
   Pratos: Pratos,
+  Venda: Venda,
 };
 
 async function renderizarProduto() {
@@ -40,7 +78,7 @@ async function renderizarProduto() {
     if (exibirProdutos.length === 0) {
       resultado!.innerHTML = `<p>Nenhum produto cadastrado no momento. Adicione o primeiro item do cardápio!</p>`;
     } else {
-      exibirProdutos.forEach((item: any) => {
+      exibirProdutos.forEach((item: Produto) => {
         //função de restaurar ela reconstrói o meu objeto/instancia com tudo o que ela tem(metodos, os propriedade. Pois quando volta da service, ele so vem em forma de objeto comum)
         const produto = restaurarProdutoDaApi(item);
         htmlCompleto += produto.criarCard();
@@ -48,21 +86,16 @@ async function renderizarProduto() {
       resultado.innerHTML = htmlCompleto;
     }
   } catch (error) {
-    return "oi";
+    alert("Não foi possível acessar a lista de produtos! Tente novamente!");
   }
 }
 
-
-//*FUNÇÃO QUE RECONSTRÓI AS PROPRIEDADES DA INSTÂNIA
+//*FUNÇÃO QUE RECONSTRÓI AS PROPRIEDADES DA INSTÂNIA - trazendo da API
 //Quando volta da API é preciso reconstruir o objeto com todas as suas características da classe para que eu possa ter acesso.
-
 function restaurarProdutoDaApi(item: any): Produto {
-  console.log("Categoria vinda da API:", item.categoria);
-
-  const classeEscolhida = classesDisponiveis[item.categoria] || Pratos;
-
-  console.log("Classe escolhida", classeEscolhida);
-
+  // console.log("Categoria vinda da API:", item.categoria);
+  const classeEscolhida = classesDisponiveis[item.categoria];
+  // console.log("Classe escolhida", classeEscolhida);
   // Chamamos o método criar, UMA VEZ SÓ.
   return classeEscolhida.criar(
     item.nome,
@@ -70,6 +103,7 @@ function restaurarProdutoDaApi(item: any): Produto {
     item.preco,
     item.categoria,
     item.imagem,
+    item.id, //id do db.json
   );
 }
 
@@ -78,26 +112,70 @@ function restaurarProdutoDaApi(item: any): Produto {
 resultado.addEventListener("click", async (e) => {
   const botaoClicado = e.target as HTMLElement;
 
+  const idDoProdutoClicado = botaoClicado.dataset.id; //id do db.jason
+
+  let produtoEncontrado: Produto;
+
+  //vai pegar meus produtos listado na service:
+  const exibirProdutos = await listarProdutos();
+
+  //*CLICANDO NO BOTÃO DE VENDA
+
   if (botaoClicado.dataset.acao === "vender") {
-    const idDoProduto = botaoClicado.dataset.id;
-    console.log(`Botão de VENDA clicado! ID: ${idDoProduto}`);
-    //vai percorrer o meu array de produtos :
+    console.log(`Botão de VENDA clicado! ID: ${idDoProdutoClicado}`);
+    //percorrer a lista procurando o produto clicado
+    produtoEncontrado = exibirProdutos.find(
+      (produto: Produto) => String(produto.id) === String(idDoProdutoClicado),
+    );
+
+    //reconmpondo minha instancia
+    const produtoInstancia = restaurarProdutoDaApi(produtoEncontrado);
+
+    const usuarioConfirmou = confirm(
+      `Deseja confirmar a venda de ${produtoInstancia.consultaNome} - Valor R$ ${produtoInstancia.consultaPreco} ?`,
+    );
+
+    if (usuarioConfirmou) {
+      const novaVenda = new Venda();
+      novaVenda.adicionar(produtoInstancia);
+      novaVenda.finalizarVenda();
+      vendaAtual.innerHTML = `R$ ${produtoInstancia.calculaPrecoFinal().toFixed(2)}`;
+      totalGeralVendas.innerHTML = `R$ ${Venda.faturamentoTotal}`;
+
+      try {
+        await salvarVendas(novaVenda);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
+
+  //*CLICANDO NO BOTÃO DE EXCLUIR
+
   if (botaoClicado.dataset.acao === "excluir") {
-    const idDoProduto = botaoClicado.dataset.id;
-    console.log(`Botão de EXCLUIR clicado! ID: ${idDoProduto}`);
+    console.log(`Botão de EXCLUIR clicado! ID: ${idDoProdutoClicado}`);
+    produtoEncontrado = exibirProdutos.find(
+      (produto: Produto) => String(produto.id) === String(idDoProdutoClicado),
+    );
+    // console.log(produtoEncontrado);
+    alert("Venda registrada!");
   }
 });
-
-
 
 //*EVENTO DO MEU BOTÃO "CADASTRAR PRODUTO"
 formulario.addEventListener("submit", async (e) => {
   e.preventDefault();
- 
+
+  // É dessa constante que vem a classeDisponível ("mapa" para escolher uma classe dinamicamente.)
+  //   const classesDisponiveis: any = {
+  //   Bebidas: Bebidas,
+  //   Lanches: Lanches,
+  //   Pratos: Pratos,
+  // };
   const classeEscolhida = classesDisponiveis[categoria.value];
 
-  const produto = classeEscolhida.criar(
+  //Criando minha instancia a partir da "classe"/categoria selecionada. Metodo criar está dentro de cada Classe
+  const produto: Produto = classeEscolhida.criar(
     nome.value,
     descricao.value,
     Number(precoProduto.value),
@@ -111,9 +189,7 @@ formulario.addEventListener("submit", async (e) => {
       await salvarProduto(produto);
       alert("Dados cadastrados com sucesso!");
     } catch (error) {
-      alert(
-        "Problemas de conexão com o banco de dados!Tente novamente mais tarde.",
-      );
+      alert("Não foi possível salvar o produto!Tente novamente mais tarde.");
       console.log(error);
     }
     formulario.reset();
