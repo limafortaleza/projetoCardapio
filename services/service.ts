@@ -34,3 +34,11 @@ export async function listarVendas() {
   const resposta = await fetch(`${API_URL}/vendas`, {});
   return resposta.json();
 }
+
+// export async function deletarProduto(id) {
+//   const resposta = await fetch(`${API_URL}/produtos/${id}`, {
+//     method: 'DELETE'
+//   });
+  
+//   return resposta.json(); 
+// }

@@ -10,7 +10,7 @@ export class Venda {
     // Calcula o total chamando o método polimórfico de cada produto
     get totalDaVenda() {
         return this.produtos.reduce((acumulador, produto) => {
-            return acumulador + produto.calculaPrecoFinal(); // Polimorfismo??
+            return acumulador + produto.calculaPrecoFinal(); // Polimorfismo 
         }, 0);
     }
     finalizarVenda() {

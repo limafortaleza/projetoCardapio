@@ -1,6 +1,4 @@
-
 import type { IProduto } from "../interfaces/IProduto";
-
 
 export abstract class Produto implements IProduto {
   // private acumulado: number = 0;
@@ -14,25 +12,21 @@ export abstract class Produto implements IProduto {
     protected preco: number,
     protected categoria: string,
     protected imagem: string,
-    id?:string
+    id?: string,
   ) {
-
-    this.id = id ||""
+    this.id = id || "";
     // this.id = Produto.proximoId;
     // Produto.proximoId += 1;
 
     this.precoFinal = this.calculaPrecoFinal();
-
-    
   }
 
-
-  get consultaNome():string{
-    return this.nome
+  get consultaNome(): string {
+    return this.nome;
   }
 
-  get consultaPreco():number{
-    return this.calculaPrecoFinal()
+  get consultaPreco(): number {
+    return this.calculaPrecoFinal();
   }
 
   validarDados() {
@@ -61,16 +55,13 @@ export abstract class Produto implements IProduto {
   criarCard(): string {
     const htmlGerado = `
       <div class="card" style="width: 18rem;">
-          <img src="${this.imagem}" class="card-img-top" alt="...">
+          <img src="${this.imagem}" class="card-img-top" alt="${this.descricao}">
           <div class="card-body">
             <h5 class="card-title">${this.nome}</h5>
             <p class="card-text">R$ ${this.precoFinal.toFixed(2)}</p>
             <p class="card-text">${this.descricao}</p>
-           <button type="button" class="btn btn-success" data-acao="vender" data-id="${this.id}">Venda</button>
+            <button type="button" class="btn btn-success" data-acao="vender" data-id="${this.id}">Venda</button>
             <button type="button" class="btn btn-danger" data-acao="excluir" data-id="${this.id}">Excluir</button>
-            
-
-            
           </div>
       </div>   
       `;

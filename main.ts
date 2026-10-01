@@ -35,34 +35,6 @@ renderizarProduto();
 
 renderizarVendas();
 
-async function renderizarVendas() {
-  try {
-    const exibirVendas = await listarVendas();
-    if (exibirVendas.length === 0) {
-      totalGeralVendas.innerHTML = "Precisamos vender!";
-    } else {
-      exibirVendas.forEach((item: Venda) => {
-        restaurarVendaDaApi(item);
-        console.log(item);
-      });
-      totalGeralVendas.innerHTML = `${Venda.faturamentoTotal.toFixed(2)}`;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-//trazer os dados das instancias de vendas. A API só me traz o dado "CRU"
-function restaurarVendaDaApi(item: any): Venda {
-  const venda = new Venda();
-  item.produtos.forEach((produto: any) => {
-    const produtoInstancia = restaurarProdutoDaApi(produto);
-    venda.adicionar(produtoInstancia);
-  });
-  venda.finalizarVenda();
-  return venda;
-}
-
 const classesDisponiveis: any = {
   Bebidas: Bebidas,
   Lanches: Lanches,
@@ -91,7 +63,9 @@ async function renderizarProduto() {
 }
 
 //*FUNÇÃO QUE RECONSTRÓI AS PROPRIEDADES DA INSTÂNIA - trazendo da API
+
 //Quando volta da API é preciso reconstruir o objeto com todas as suas características da classe para que eu possa ter acesso.
+
 function restaurarProdutoDaApi(item: any): Produto {
   // console.log("Categoria vinda da API:", item.categoria);
   const classeEscolhida = classesDisponiveis[item.categoria];
@@ -107,9 +81,39 @@ function restaurarProdutoDaApi(item: any): Produto {
   );
 }
 
-//*Eventos dos botões de venda e exclusão
+async function renderizarVendas() {
+  try {
+    const exibirVendas = await listarVendas();
+    if (exibirVendas.length === 0) {
+      totalGeralVendas.innerHTML = "Precisamos vender!";
+    } else {
+      exibirVendas.forEach((item: Venda) => {
+        restaurarVendaDaApi(item);
+        console.log(item);
+      });
+      totalGeralVendas.innerHTML = `R$ ${Venda.faturamentoTotal.toFixed(2)}`;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//trazer os dados das instancias de vendas. A API só me traz o dado "CRU"
+function restaurarVendaDaApi(item: any): Venda {
+  const venda = new Venda();
+  item.produtos.forEach((produto: any) => {
+    const produtoInstancia = restaurarProdutoDaApi(produto);
+    venda.adicionar(produtoInstancia);
+  });
+  venda.finalizarVenda();
+  return venda;
+}
+
+//*EVENTOS DOS BOTÕES DE VENDA E EXCLUSÃO
 
 resultado.addEventListener("click", async (e) => {
+  console.log("OI");
+
   const botaoClicado = e.target as HTMLElement;
 
   const idDoProdutoClicado = botaoClicado.dataset.id; //id do db.jason
@@ -128,7 +132,8 @@ resultado.addEventListener("click", async (e) => {
       (produto: Produto) => String(produto.id) === String(idDoProdutoClicado),
     );
 
-    //reconmpondo minha instancia
+    //reconmpondo minha instancia só para exibir uma mensagem mais completa de confirmação de venda
+
     const produtoInstancia = restaurarProdutoDaApi(produtoEncontrado);
 
     const usuarioConfirmou = confirm(
@@ -140,7 +145,7 @@ resultado.addEventListener("click", async (e) => {
       novaVenda.adicionar(produtoInstancia);
       novaVenda.finalizarVenda();
       vendaAtual.innerHTML = `R$ ${produtoInstancia.calculaPrecoFinal().toFixed(2)}`;
-      totalGeralVendas.innerHTML = `R$ ${Venda.faturamentoTotal}`;
+      totalGeralVendas.innerHTML = `R$ ${Venda.faturamentoTotal.toFixed(2)}`;
 
       try {
         await salvarVendas(novaVenda);
@@ -157,8 +162,13 @@ resultado.addEventListener("click", async (e) => {
     produtoEncontrado = exibirProdutos.find(
       (produto: Produto) => String(produto.id) === String(idDoProdutoClicado),
     );
-    // console.log(produtoEncontrado);
-    alert("Venda registrada!");
+    const confirmaExclusao = confirm(`Deseja confirmar a exclusão do produto`);
+
+    if (confirmaExclusao) {
+      produtoEncontrado = exibirProdutos.find(
+        (produto: Produto) => String(produto.id) === String(idDoProdutoClicado),
+      );
+    }
   }
 });
 
@@ -172,6 +182,7 @@ formulario.addEventListener("submit", async (e) => {
   //   Lanches: Lanches,
   //   Pratos: Pratos,
   // };
+
   const classeEscolhida = classesDisponiveis[categoria.value];
 
   //Criando minha instancia a partir da "classe"/categoria selecionada. Metodo criar está dentro de cada Classe

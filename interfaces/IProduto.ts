@@ -7,5 +7,5 @@ export interface IProduto {
   validarDados():boolean;
   criarCard():string;
   calculaPrecoFinal():number;
-  
+  // quis manter o encapsulamentos das propriedades.
 }

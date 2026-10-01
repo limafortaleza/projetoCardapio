@@ -20,34 +20,6 @@ const totalGeralVendas = document.querySelector("#total-geral-vendas");
 //*INÍCIO DO CÓDIGO
 renderizarProduto();
 renderizarVendas();
-async function renderizarVendas() {
-    try {
-        const exibirVendas = await listarVendas();
-        if (exibirVendas.length === 0) {
-            totalGeralVendas.innerHTML = "Precisamos vender!";
-        }
-        else {
-            exibirVendas.forEach((item) => {
-                restaurarVendaDaApi(item);
-                console.log(item);
-            });
-            totalGeralVendas.innerHTML = `${Venda.faturamentoTotal.toFixed(2)}`;
-        }
-    }
-    catch (error) {
-        console.log(error);
-    }
-}
-//trazer os dados das instancias de vendas. A API só me traz o dado "CRU"
-function restaurarVendaDaApi(item) {
-    const venda = new Venda();
-    item.produtos.forEach((produto) => {
-        const produtoInstancia = restaurarProdutoDaApi(produto);
-        venda.adicionar(produtoInstancia);
-    });
-    venda.finalizarVenda();
-    return venda;
-}
 const classesDisponiveis = {
     Bebidas: Bebidas,
     Lanches: Lanches,
@@ -83,8 +55,37 @@ function restaurarProdutoDaApi(item) {
     // Chamamos o método criar, UMA VEZ SÓ.
     return classeEscolhida.criar(item.nome, item.descricao, item.preco, item.categoria, item.imagem, item.id);
 }
-//*Eventos dos botões de venda e exclusão
+async function renderizarVendas() {
+    try {
+        const exibirVendas = await listarVendas();
+        if (exibirVendas.length === 0) {
+            totalGeralVendas.innerHTML = "Precisamos vender!";
+        }
+        else {
+            exibirVendas.forEach((item) => {
+                restaurarVendaDaApi(item);
+                console.log(item);
+            });
+            totalGeralVendas.innerHTML = `R$ ${Venda.faturamentoTotal.toFixed(2)}`;
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+//trazer os dados das instancias de vendas. A API só me traz o dado "CRU"
+function restaurarVendaDaApi(item) {
+    const venda = new Venda();
+    item.produtos.forEach((produto) => {
+        const produtoInstancia = restaurarProdutoDaApi(produto);
+        venda.adicionar(produtoInstancia);
+    });
+    venda.finalizarVenda();
+    return venda;
+}
+//*EVENTOS DOS BOTÕES DE VENDA E EXCLUSÃO
 resultado.addEventListener("click", async (e) => {
+    console.log("OI");
     const botaoClicado = e.target;
     const idDoProdutoClicado = botaoClicado.dataset.id; //id do db.jason
     let produtoEncontrado;
@@ -95,7 +96,7 @@ resultado.addEventListener("click", async (e) => {
         console.log(`Botão de VENDA clicado! ID: ${idDoProdutoClicado}`);
         //percorrer a lista procurando o produto clicado
         produtoEncontrado = exibirProdutos.find((produto) => String(produto.id) === String(idDoProdutoClicado));
-        //reconmpondo minha instancia
+        //reconmpondo minha instancia só para exibir uma mensagem mais completa de confirmação de venda
         const produtoInstancia = restaurarProdutoDaApi(produtoEncontrado);
         const usuarioConfirmou = confirm(`Deseja confirmar a venda de ${produtoInstancia.consultaNome} - Valor R$ ${produtoInstancia.consultaPreco} ?`);
         if (usuarioConfirmou) {
@@ -103,7 +104,7 @@ resultado.addEventListener("click", async (e) => {
             novaVenda.adicionar(produtoInstancia);
             novaVenda.finalizarVenda();
             vendaAtual.innerHTML = `R$ ${produtoInstancia.calculaPrecoFinal().toFixed(2)}`;
-            totalGeralVendas.innerHTML = `R$ ${Venda.faturamentoTotal}`;
+            totalGeralVendas.innerHTML = `R$ ${Venda.faturamentoTotal.toFixed(2)}`;
             try {
                 await salvarVendas(novaVenda);
             }
@@ -116,8 +117,10 @@ resultado.addEventListener("click", async (e) => {
     if (botaoClicado.dataset.acao === "excluir") {
         console.log(`Botão de EXCLUIR clicado! ID: ${idDoProdutoClicado}`);
         produtoEncontrado = exibirProdutos.find((produto) => String(produto.id) === String(idDoProdutoClicado));
-        // console.log(produtoEncontrado);
-        alert("Venda registrada!");
+        const confirmaExclusao = confirm(`Deseja confirmar a exclusão do produto`);
+        if (confirmaExclusao) {
+            produtoEncontrado = exibirProdutos.find((produto) => String(produto.id) === String(idDoProdutoClicado));
+        }
     }
 });
 //*EVENTO DO MEU BOTÃO "CADASTRAR PRODUTO"
